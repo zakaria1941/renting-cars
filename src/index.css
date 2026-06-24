@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-primary: #1a1a2e;
+  --color-accent: #e63946;
+  --color-accent-hover: #d62828;
+  --color-surface: #f8f9fa;
+  --color-navy-dark: #1a1a2e;
+  --color-purple-dark: #16213e;
+  --color-teal-dark: #0f3460;
+}
+
+:root {
+  --primary: #1a1a2e;
+  --accent: #e63946;
+  --surface: #f8f9fa;
+  --text-main: #1a1a1a;
+  --text-secondary: #555555;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom Scroll Reveal styles */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero Background Gradient Mesh */
+.hero-gradient-mesh {
+  background: radial-gradient(circle at 20% 30%, #1a1a2e 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, #16213e 0%, transparent 50%),
+              radial-gradient(circle at 50% 10%, #0f3460 0%, transparent 60%),
+              radial-gradient(circle at 10% 90%, #1a1a2e 0%, transparent 50%),
+              #0c0c16;
+  background-size: 200% 200%;
+  animation: mesh-move 20s ease infinite;
+  position: relative;
+}
+
+/* Subtle Grid overlay */
+.hero-gradient-mesh::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+@keyframes mesh-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Glassmorphism cards */
+.glass-card {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Light glassmorphism cards for light sections */
+.glass-card-light {
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, #e63946, #ff6b6b); 
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent;
+}
+
+/* Card hover effects */
+.car-card {
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.car-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+}
+
+.car-card img {
+  transition: transform 0.5s ease;
+}
+
+.car-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Category grid tile hover effects */
+.category-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.category-tile:hover {
+  transform: scale(1.04);
+}
+
+.category-tile:hover img {
+  filter: brightness(1.1);
+}
+
+/* Custom hide scrollbar for carousal */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Floating Particle Animation */
+@keyframes float-up {
+  0% {
+    transform: translateY(100vh) translateX(0) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-10vh) translateX(50px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.particle {
+  position: absolute;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float-up 15s linear infinite;
+}

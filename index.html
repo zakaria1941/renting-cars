@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveNow — Premium Car Sharing Marketplace</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,300..600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS RESET */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --ink: #111318;
+      --ink-sub: #6b7280;
+      --canvas: #f5f5f3;
+      --white: #ffffff;
+      --red: #d4341c;
+      --red-light: #fdf0ee;
+      --border: #e5e5e3;
+      --dark: #0e0f11;
+      --dark-2: #1a1b1f;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    /* TYPOGRAPHY HELPER CLASSES */
+    h1, h2, h3, .serif-font {
+      font-family: var(--font-serif);
+      font-weight: 400;
+    }
+
+    /* CONTAINER */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* UTILITIES */
+    .section-padding {
+      padding: 96px 0;
+    }
+
+    @media (max-width: 768px) {
+      .section-padding {
+        padding: 64px 0;
+      }
+    }
+
+    /* SCROLL REVEAL SUBTLE ANIMATION */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* NAVBAR */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+      z-index: 1000;
+      transition: all 0.25s ease;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+
+    header.transparent {
+      background-color: transparent;
+      color: var(--white);
+    }
+
+    header.scrolled {
+      background-color: var(--white);
+      color: var(--ink);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 10px rgba(0,0,0,0.02);
+    }
+
+    .logo {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      text-decoration: none;
+      color: inherit;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--red);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-actions .login-link {
+      text-decoration: none;
+      color: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-actions .login-link:hover {
+      color: var(--red);
+    }
+
+    .btn-red {
+      background-color: var(--red);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: filter 0.2s ease;
+    }
+
+    .btn-red:hover {
+      filter: brightness(0.92);
+    }
+
+    /* Hamburger Menu Trigger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 20px;
+      height: 14px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 2px;
+      background-color: currentColor;
+      transition: all 0.25s ease;
+    }
+
+    /* Mobile Menu Drawer */
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: var(--dark);
+      color: var(--white);
+      padding: 100px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      z-index: 999;
+      transform: translateY(-100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mobile-drawer.open {
+      transform: translateY(0);
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .mobile-nav-links a {
+      text-decoration: none;
+      color: var(--white);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .mobile-drawer .nav-actions-mobile {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mobile-drawer .nav-actions-mobile .login-link {
+      text-align: center;
+      padding: 14px;
+      text-decoration: none;
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+    }
+
+    .mobile-drawer .nav-actions-mobile .btn-red {
+      text-align: center;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1800&q=85');
+      background-size: cover;
+      background-position: center;
+      color: var(--white);
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+
+    /* Layered overlays over the photo */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,10,12,0.55) 0%, rgba(10,10,12,0.80) 100%);
+      z-index: 1;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(10,10,12,0.3) 0%, transparent 60%);
+      z-index: 2;
+    }
+
+    /* Separating thin line between nav and hero content */
+    .hero-separator {
+      position: absolute;
+      top: 64px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.12);
+      z-index: 5;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-content {
+      text-align: left;
+    }
+
+    .hero-content h1 {
+      font-size: 68px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero-content p {
+      font-family: var(--font-sans);
+      font-size: 18px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.75);
+      max-width: 480px;
+    }
+
+    /* SEARCH CARD */
+    .search-card {
+      background-color: var(--white);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      color: var(--ink);
+    }
+
+    .search-card h3 {
+      font-size: 22px;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .search-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .search-field {
+      position: relative;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-field svg {
+      flex-shrink: 0;
+    }
+
+    .search-field input {
+      border: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--ink);
+      width: 100%;
+      outline: none;
+    }
+
+    .search-field input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Custom Date Display trigger */
+    .date-display-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .date-text {
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .date-text.placeholder {
+      color: #9ca3af;
+    }
+
+    /* CUSTOM CALENDAR PANEL */
+    .calendar-panel {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      min-width: 290px;
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+      border: 1px solid var(--border);
+      z-index: 99;
+      display: none;
+    }
+
+    .calendar-panel.active {
+      display: block;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .calendar-header span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .calendar-nav-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--ink);
+      transition: background-color 0.2s;
+    }
+
+    .calendar-nav-btn:hover {
+      background-color: var(--red-light);
+      color: var(--red);
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .calendar-weekdays div {
+      font-size: 11px;
+      font-weight: 500;
+      color: #9ca3af;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      row-gap: 4px;
+      text-align: center;
+    }
+
+    .calendar-day {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin: 0 auto;
+    }
+
+    .calendar-day:hover {
+      background-color: var(--red-light);
+      color: var(--red);
+      border-radius: 50%;
+    }
+
+    .calendar-day.selected {
+      background-color: var(--red) !important;
+      color: var(--white) !important;
+      border-radius: 50%;
+    }
+
+    .calendar-day.today {
+      font-weight: 600;
+      color: var(--red);
+    }
+
+    .calendar-day.other-month {
+      color: #d1d5db;
+    }
+
+    .search-submit {
+      width: 100%;
+      height: 50px;
+      background-color: var(--red);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: filter 0.2s ease;
+    }
+
+    .search-submit:hover {
+      filter: brightness(0.92);
+    }
+
+    /* RESPONSIVE HERO */
+    @media (max-width: 992px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .hero-content {
+        text-align: center;
+      }
+      .hero-content h1 {
+        font-size: 40px;
+      }
+      .hero-content p {
+        margin: 0 auto;
+      }
+    }
+
+    /* STATS SECTION */
+    .stats-section {
+      background-color: var(--canvas);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 16px 24px;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--ink-sub);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 32px;
+      }
+      .stat-item:nth-child(2) {
+        border-right: none;
+      }
+      .stat-item {
+        padding: 8px 12px;
+      }
+    }
+
+    /* SECTION HEADERS */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      font-size: 42px;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .section-header p {
+      font-size: 16px;
+      color: var(--ink-sub);
+      margin-top: 8px;
+    }
+
+    .view-all-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--red);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .view-all-link:hover {
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    /* CARS GRID & CARDS */
+    .cars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .cars-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .cars-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .car-card {
+      background-color: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .car-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    }
+
+    .car-card-image-wrapper {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      background-color: #f0f0f0;
+    }
+
+    .car-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .car-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background-color: var(--white);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .heart-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--white);
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+
+    .heart-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .heart-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .heart-btn.liked svg {
+      fill: var(--red);
+      stroke: var(--red);
+    }
+
+    .car-card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .car-card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .car-name-row {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .car-meta-row {
+      font-size: 13px;
+      color: var(--ink-sub);
+    }
+
+    .car-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .car-rating-row .star-icon {
+      color: #f59e0b;
+    }
+
+    .car-rating-row .trips-count {
+      color: var(--ink-sub);
+      font-weight: 400;
+    }
+
+    .car-card-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .price-block {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .price-num {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      color: var(--ink);
+    }
+
+    .price-unit {
+      font-size: 13px;
+      color: var(--ink-sub);
+    }
+
+    .book-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--red);
+      text-decoration: none;
+    }
+
+    .book-link:hover {
+      text-decoration: underline;
+    }
+
+    /* BROWSE BY TYPE SECTION */
+    .browse-type-section {
+      background-color: var(--white);
+    }
+
+    .browse-type-section h2 {
+      text-align: center;
+      margin-bottom: 48px;
+      font-size: 42px;
+    }
+
+    .types-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .types-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .type-tile {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .type-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: filter 0.2s ease;
+    }
+
+    .type-tile::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%);
+      transition: background 0.2s ease;
+    }
+
+    .type-tile:hover img {
+      filter: brightness(1.05);
+    }
+
+    .type-tile:hover::after {
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 50%);
+    }
+
+    .type-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px;
+      z-index: 10;
+      color: var(--white);
+    }
+
+    .type-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .type-subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* HOW IT WORKS SECTION */
+    .how-it-works {
+      background-color: var(--dark);
+      color: var(--white);
+      position: relative;
+    }
+
+    .how-it-works h2 {
+      text-align: center;
+      font-size: 42px;
+      color: var(--white);
+    }
+
+    .how-it-works .subtitle {
+      text-align: center;
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      max-width: 480px;
+      margin: 8px auto 64px;
+    }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+
+    /* Continuous Line underneath steps on desktop */
+    .steps-connector-line {
+      position: absolute;
+      left: 0;
+      bottom: -32px;
+      width: 100%;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 768px) {
+      .steps-row {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .steps-connector-line {
+        display: none;
+      }
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .step-icon-wrapper {
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-icon-wrapper svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .step-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.6);
+      max-width: 260px;
+    }
+
+    /* TESTIMONIALS SECTION */
+    .testimonials-section {
+      background-color: var(--canvas);
+    }
+
+    .testimonials-section h2 {
+      text-align: center;
+      margin-bottom: 48px;
+      font-size: 42px;
+    }
+
+    .testimonials-wrapper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .testimonials-wrapper {
+        overflow-x: auto;
+        display: flex;
+        gap: 20px;
+        padding-bottom: 16px;
+        scroll-snap-type: x mandatory;
+      }
+    }
+
+    .testimonial-card {
+      background-color: var(--white);
+      border-radius: 14px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 240px;
+    }
+
+    @media (max-width: 1024px) {
+      .testimonial-card {
+        min-w: 280px;
+        width: 280px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+      }
+    }
+
+    .testimonial-stars {
+      display: flex;
+      gap: 2px;
+      color: #f59e0b;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-quote {
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-author-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--red-light);
+      color: var(--red);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .testimonial-author-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .testimonial-author-loc {
+      font-size: 13px;
+      color: var(--ink-sub);
+    }
+
+    /* HOST CTA SECTION */
+    .host-cta-section {
+      background-color: var(--white);
+      display: flex;
+      align-items: stretch;
+      padding: 0;
+    }
+
+    .host-cta-left {
+      width: 50%;
+      padding: 96px 40px 96px calc((100% - 1200px)/2 + 24px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .host-cta-right {
+      width: 50%;
+      position: relative;
+    }
+
+    .host-cta-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+    }
+
+    .host-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .host-cta-left h2 {
+      font-size: 42px;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .host-cta-left p {
+      font-size: 16px;
+      color: var(--ink-sub);
+      max-width: 400px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .host-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .host-bullets div {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .host-cta-left .btn-red {
+      align-self: flex-start;
+      height: 50px;
+      padding: 0 32px;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 992px) {
+      .host-cta-left {
+        padding: 96px 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .host-cta-section {
+        flex-direction: column;
+      }
+      .host-cta-left {
+        width: 100%;
+        padding: 64px 24px;
+      }
+      .host-cta-right {
+        width: 100%;
+        height: 350px;
+      }
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--dark);
+      color: rgba(255,255,255,0.6);
+      padding: 80px 0 32px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr repeat(4, 1fr);
+      gap: 40px;
+      margin-bottom: 64px;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-brand .logo {
+      color: var(--white);
+    }
+
+    .footer-brand p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+      max-width: 240px;
+    }
+
+    .footer-col h4 {
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-col ul a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul a:hover {
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-bottom-links span {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .footer-bottom-links a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-socials a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+    }
+
+    .footer-socials a:hover {
+      color: var(--white);
+    }
+
+    @media (max-width: 992px) {
+      .footer-top {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+      }
+    }
+
+    /* MODAL WINDOWS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--white);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink-sub);
+    }
+
+    .modal-card h3 {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-form-field label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .modal-form-field input {
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0 12px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .modal-form-field input:focus {
+      border-color: var(--red);
+    }
+
+    .modal-action-btn {
+      height: 44px;
+      background-color: var(--red);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toast-notif {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--ink);
+      color: var(--white);
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 3000;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="transparent" id="navbar">
+    <div class="container" style="height: 100%;">
+      <nav style="width: 100%;">
+        <a href="#" class="logo">DriveNow</a>
+        
+        <ul class="nav-links">
+          <li><a href="#featured-cars">Explore</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#become-host">For hosts</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="#" class="login-link" onclick="openModal('login'); return false;">Log in</a>
+          <button class="btn-red" onclick="openModal('signup')">Get started</button>
+        </div>
+
+        <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MOBILE DRAWER -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <ul class="mobile-nav-links">
+      <li><a href="#featured-cars" onclick="toggleMobileMenu()">Explore</a></li>
+      <li><a href="#how-it-works" onclick="toggleMobileMenu()">How it works</a></li>
+      <li><a href="#become-host" onclick="toggleMobileMenu()">For hosts</a></li>
+    </ul>
+    <div class="nav-actions-mobile">
+      <a href="#" class="login-link" onclick="toggleMobileMenu(); openModal('login'); return false;">Log in</a>
+      <button class="btn-red" onclick="toggleMobileMenu(); openModal('signup')">Get started</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+    
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-separator"></div>
+      <div class="container">
+        
+        <!-- Left content -->
+        <div class="hero-content">
+          <h1>Find the perfect car, exactly where you need it</h1>
+          <p>Rent from trusted local hosts — daily, weekly, or monthly</p>
+        </div>
+
+        <!-- Right search box card -->
+        <div class="search-card">
+          <h3>Find your car</h3>
+          <form class="search-form-group" onsubmit="handleSearch(event)">
+            
+            <!-- Location -->
+            <div class="search-field">
+              <label>PICKUP LOCATION</label>
+              <div class="search-input-wrapper">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input type="text" placeholder="City, airport or address" required id="loc-input">
+              </div>
+            </div>
+
+            <!-- Pickup Date -->
+            <div class="search-field">
+              <label>PICKUP DATE</label>
+              <div class="date-display-trigger" onclick="toggleCalendar('pickup')">
+                <div class="search-input-wrapper">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span class="date-text placeholder" id="pickup-text">Select date</span>
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+
+              <!-- Pickup Calendar Panel -->
+              <div class="calendar-panel" id="pickup-calendar">
+                <div class="calendar-header">
+                  <button type="button" class="calendar-nav-btn" onclick="prevMonth('pickup', event)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <span id="pickup-month-label">June 2026</span>
+                  <button type="button" class="calendar-nav-btn" onclick="nextMonth('pickup', event)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                  </button>
+                </div>
+                <div class="calendar-weekdays">
+                  <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+                </div>
+                <div class="calendar-grid" id="pickup-grid"></div>
+              </div>
+            </div>
+
+            <!-- Return Date -->
+            <div class="search-field">
+              <label>RETURN DATE</label>
+              <div class="date-display-trigger" onclick="toggleCalendar('return')">
+                <div class="search-input-wrapper">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span class="date-text placeholder" id="return-text">Select date</span>
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+
+              <!-- Return Calendar Panel -->
+              <div class="calendar-panel" id="return-calendar">
+                <div class="calendar-header">
+                  <button type="button" class="calendar-nav-btn" onclick="prevMonth('return', event)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <span id="return-month-label">June 2026</span>
+                  <button type="button" class="calendar-nav-btn" onclick="nextMonth('return', event)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                  </button>
+                </div>
+                <div class="calendar-weekdays">
+                  <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+                </div>
+                <div class="calendar-grid" id="return-grid"></div>
+              </div>
+            </div>
+
+            <button type="submit" class="search-submit">Search available cars</button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section reveal">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">450K+</div>
+            <div class="stat-label">vehicles available</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">10M+</div>
+            <div class="stat-label">trips completed</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">180+</div>
+            <div class="stat-label">countries covered</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">4.9</div>
+            <div class="stat-label">average trip rating</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED CARS SECTION -->
+    <section class="section-padding reveal" id="featured-cars">
+      <div class="container">
+        
+        <div class="section-header">
+          <div>
+            <h2>Popular Cars Near You</h2>
+            <p>Handpicked top-rated vehicles from trusted hosts</p>
+          </div>
+          <a href="#featured-cars" class="view-all-link" onclick="showToast('Browsing all 450,000+ available vehicles...'); return false;">View all</a>
+        </div>
+
+        <div class="cars-grid">
+          
+          <!-- Car 1 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80" alt="Tesla Model Y" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">Tesla Model Y</span>
+                <span class="car-meta-row">2024 · Electric</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>4.9</span>
+                <span class="trips-count">· 23 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$89</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('Tesla Model Y'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Car 2 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80" alt="Porsche 911" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">Porsche 911</span>
+                <span class="car-meta-row">2023 · Sports</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>5.0</span>
+                <span class="trips-count">· 14 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$195</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('Porsche 911'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Car 3 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1547744152-14d985cb937f?w=600&q=80" alt="Ford Mustang" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">Ford Mustang</span>
+                <span class="car-meta-row">2022 · Convertible</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>4.8</span>
+                <span class="trips-count">· 39 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$76</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('Ford Mustang'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Car 4 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80" alt="BMW M3" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">BMW M3</span>
+                <span class="car-meta-row">2023 · Performance</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>4.9</span>
+                <span class="trips-count">· 31 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$145</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('BMW M3'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Car 5 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=80" alt="Jeep Wrangler" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">Jeep Wrangler</span>
+                <span class="car-meta-row">2022 · SUV / Offroad</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>4.7</span>
+                <span class="trips-count">· 52 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$68</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('Jeep Wrangler'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Car 6 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=600&q=80" alt="Mercedes G-Class" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">Mercedes G-Class</span>
+                <span class="car-meta-row">2021 · Premium SUV</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>4.9</span>
+                <span class="trips-count">· 18 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$290</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('Mercedes G-Class'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Car 7 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&q=80" alt="Toyota RAV4" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">Toyota RAV4</span>
+                <span class="car-meta-row">2024 · Hybrid SUV</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>4.8</span>
+                <span class="trips-count">· 82 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$55</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('Toyota RAV4'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Car 8 -->
+          <article class="car-card">
+            <div class="car-card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80" alt="Chevrolet Corvette" class="car-card-img" loading="lazy">
+              <span class="car-tag">POPULAR</span>
+              <button class="heart-btn" aria-label="Favorite" onclick="toggleHeart(this, event)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-header">
+                <span class="car-name-row">Chevrolet Corvette</span>
+                <span class="car-meta-row">2022 · Supercar</span>
+              </div>
+              <div class="car-rating-row">
+                <span class="star-icon">★</span>
+                <span>5.0</span>
+                <span class="trips-count">· 11 trips</span>
+              </div>
+              <div class="car-card-footer">
+                <div class="price-block">
+                  <span class="price-num">$180</span>
+                  <span class="price-unit">/day</span>
+                </div>
+                <a href="#" class="book-link" onclick="bookCar('Chevrolet Corvette'); return false;">Book now</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BROWSE BY TYPE SECTION -->
+    <section class="section-padding browse-type-section reveal">
+      <div class="container">
+        <h2>Explore by Vehicle Type</h2>
+        
+        <div class="types-grid">
+          
+          <!-- Category 1 -->
+          <div class="type-tile" onclick="showToast('Browsing Sports collection...')">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80" alt="Sports Cars" loading="lazy">
+            <div class="type-content">
+              <div class="type-title">Sports</div>
+              <div class="type-subtitle">Drive something iconic</div>
+            </div>
+          </div>
+
+          <!-- Category 2 -->
+          <div class="type-tile" onclick="showToast('Browsing SUVs collection...')">
+            <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=80" alt="SUVs" loading="lazy">
+            <div class="type-content">
+              <div class="type-title">SUVs</div>
+              <div class="type-subtitle">Room for everyone</div>
+            </div>
+          </div>
+
+          <!-- Category 3 -->
+          <div class="type-tile" onclick="showToast('Browsing Electric collection...')">
+            <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80" alt="Electric" loading="lazy">
+            <div class="type-content">
+              <div class="type-title">Electric</div>
+              <div class="type-subtitle">Zero emissions</div>
+            </div>
+          </div>
+
+          <!-- Category 4 -->
+          <div class="type-tile" onclick="showToast('Browsing Luxury collection...')">
+            <img src="https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=600&q=80" alt="Luxury" loading="lazy">
+            <div class="type-content">
+              <div class="type-title">Luxury</div>
+              <div class="type-subtitle">Arrive in style</div>
+            </div>
+          </div>
+
+          <!-- Category 5 -->
+          <div class="type-tile" onclick="showToast('Browsing Trucks collection...')">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Trucks" loading="lazy">
+            <div class="type-content">
+              <div class="type-title">Trucks</div>
+              <div class="type-subtitle">Built for the job</div>
+            </div>
+          </div>
+
+          <!-- Category 6 -->
+          <div class="type-tile" onclick="showToast('Browsing Vans collection...')">
+            <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&q=80" alt="Vans" loading="lazy">
+            <div class="type-content">
+              <div class="type-title">Vans</div>
+              <div class="type-subtitle">Group travel sorted</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section class="section-padding how-it-works" id="how-it-works">
+      <div class="container reveal">
+        <h2>Renting is simple</h2>
+        <div class="subtitle">Experience the easiest way to book and drive the absolute perfect car of your choice.</div>
+        
+        <div class="steps-row">
+          
+          <!-- Continuous bottom separator bar on desktop -->
+          <div class="steps-connector-line"></div>
+
+          <!-- Step 1 -->
+          <div class="step-item">
+            <div class="step-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <h3 class="step-title">Pick your car</h3>
+            <p class="step-desc">Browse by city, date, and vehicle type to discover the perfect local vehicle.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-item">
+            <div class="step-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg>
+            </div>
+            <h3 class="step-title">Book instantly</h3>
+            <p class="step-desc">Confirm in seconds. Our local hosts are verified, professional, and respond incredibly fast.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-item">
+            <div class="step-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+            </div>
+            <h3 class="step-title">Hit the road</h3>
+            <p class="step-desc">Meet your friendly host, grab the physical keys (or unlock via app), and head out.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="section-padding testimonials-section reveal">
+      <div class="container">
+        <h2>What renters are saying</h2>
+        
+        <div class="testimonials-wrapper">
+          
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card">
+            <div>
+              <div class="testimonial-stars">★★★★★</div>
+              <p class="testimonial-quote">"Way better than Budget or Hertz. The car was clean, the host was chill, and it cost half the price."</p>
+            </div>
+            <div class="testimonial-author-block">
+              <div class="testimonial-avatar">SM</div>
+              <div>
+                <div class="testimonial-author-name">Sarah M.</div>
+                <div class="testimonial-author-loc">Miami, FL</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card">
+            <div>
+              <div class="testimonial-stars">★★★★★</div>
+              <p class="testimonial-quote">"I rented a Mustang for the weekend — best decision I made all summer, honestly."</p>
+            </div>
+            <div class="testimonial-author-block">
+              <div class="testimonial-avatar">JK</div>
+              <div>
+                <div class="testimonial-author-name">James K.</div>
+                <div class="testimonial-author-loc">Los Angeles, CA</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card">
+            <div>
+              <div class="testimonial-stars">★★★★★</div>
+              <p class="testimonial-quote">"Booked a Tesla for a road trip. Charged at every stop, zero drama. Host left snacks in the car."</p>
+            </div>
+            <div class="testimonial-author-block">
+              <div class="testimonial-avatar">AL</div>
+              <div>
+                <div class="testimonial-author-name">Amira L.</div>
+                <div class="testimonial-author-loc">Paris, FR</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- HOST CTA SECTION -->
+    <section class="host-cta-section reveal" id="become-host">
+      
+      <!-- Left text side -->
+      <div class="host-cta-left">
+        <span class="host-eyebrow">FOR CAR OWNERS</span>
+        <h2>Your car earns while you sleep</h2>
+        <p>Thousands of owners list their cars on DriveNow. Set your own prices, choose your calendar, and get paid directly.</p>
+        
+        <div class="host-bullets">
+          <div>You control your schedule</div>
+          <div>Protection on every trip</div>
+          <div>Paid within 3 days</div>
+        </div>
+
+        <button class="btn-red" onclick="openModal('host')">Start hosting</button>
+      </div>
+
+      <!-- Right image side -->
+      <div class="host-cta-right">
+        <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=900&q=80" alt="Handing over car keys" loading="lazy">
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      
+      <div class="footer-top">
+        
+        <div class="footer-brand">
+          <a href="#" class="logo">DriveNow</a>
+          <p>The world's premium and largest peer-to-peer car sharing marketplace.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>DriveNow</h4>
+          <ul>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">About</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Team</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Careers</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Press</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">How It Works</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Trust & Safety</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Gift Cards</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Weddings</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Hosting</h4>
+          <ul>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">List Your Car</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Insurance</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Host Tools</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">All-Star Hosts</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Help Center</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Contact</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Terms</a></li>
+            <li><a href="#" onclick="showToast('Link initialized!'); return false;">Privacy</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-bottom-links">
+          <span>© 2026 DriveNow</span>
+          <a href="#" onclick="showToast('Privacy Policy'); return false;">Privacy</a>
+          <a href="#" onclick="showToast('Terms of Service'); return false;">Terms</a>
+          <a href="#" onclick="showToast('Cookies Policy'); return false;">Cookies</a>
+        </div>
+        <div class="footer-socials">
+          <a href="#" onclick="showToast('Opening Instagram...'); return false;">Instagram</a>
+          <a href="#" onclick="showToast('Opening TikTok...'); return false;">TikTok</a>
+          <a href="#" onclick="showToast('Opening X...'); return false;">X</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- AUTH LOGIN MODAL -->
+  <div class="modal-overlay" id="modal-login">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('login')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h3>Log in to DriveNow</h3>
+      <form class="modal-form" onsubmit="handleAuthSubmit(event, 'login')">
+        <div class="modal-form-field">
+          <label>EMAIL ADDRESS</label>
+          <input type="email" placeholder="you@example.com" required id="login-email">
+        </div>
+        <div class="modal-form-field">
+          <label>PASSWORD</label>
+          <input type="password" placeholder="••••••••" required id="login-password">
+        </div>
+        <button type="submit" class="modal-action-btn">Log in</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- AUTH SIGNUP MODAL -->
+  <div class="modal-overlay" id="modal-signup">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('signup')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h3>Create an account</h3>
+      <form class="modal-form" onsubmit="handleAuthSubmit(event, 'signup')">
+        <div class="modal-form-field">
+          <label>FULL NAME</label>
+          <input type="text" placeholder="John Doe" required id="signup-name">
+        </div>
+        <div class="modal-form-field">
+          <label>EMAIL ADDRESS</label>
+          <input type="email" placeholder="you@example.com" required id="signup-email">
+        </div>
+        <div class="modal-form-field">
+          <label>PASSWORD</label>
+          <input type="password" placeholder="••••••••" required id="signup-password">
+        </div>
+        <button type="submit" class="modal-action-btn">Get started</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- HOSTING APPLICATION MODAL -->
+  <div class="modal-overlay" id="modal-host">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('host')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h3>Start hosting your car</h3>
+      <form class="modal-form" onsubmit="handleHostSubmit(event)">
+        <div class="modal-form-field">
+          <label>YOUR CAR'S MAKE & MODEL</label>
+          <input type="text" placeholder="Tesla Model 3, Ford Explorer, etc." required id="host-car">
+        </div>
+        <div class="modal-form-field">
+          <label>YOUR CITY</label>
+          <input type="text" placeholder="e.g. San Francisco, CA" required id="host-city">
+        </div>
+        <div class="modal-form-field">
+          <label>ESTIMATED DAILY PRICE ($)</label>
+          <input type="number" placeholder="85" required id="host-price">
+        </div>
+        <button type="submit" class="modal-action-btn">List my vehicle</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- BOOKING CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="modal-booking">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('booking')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h3 id="booking-title">Book Vehicle</h3>
+      <p style="font-size: 14px; color: var(--ink-sub); margin-bottom: 24px; line-height: 1.5;">Please confirm your contact details to finalize the booking reservation directly with the verified owner.</p>
+      <form class="modal-form" onsubmit="handleBookingConfirm(event)">
+        <div class="modal-form-field">
+          <label>FULL NAME</label>
+          <input type="text" placeholder="John Doe" required id="book-name">
+        </div>
+        <div class="modal-form-field">
+          <label>PHONE NUMBER</label>
+          <input type="tel" placeholder="+1 (555) 000-0000" required id="book-phone">
+        </div>
+        <button type="submit" class="modal-action-btn">Confirm booking reservation</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-notif" id="toast-notif">Notification info</div>
+
+  <script>
+    // NAVBAR SCROLL STATE
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (window.scrollY > 60) {
+        nav.classList.remove('transparent');
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+        nav.classList.add('transparent');
+      }
+    });
+
+    // HAMBURGER MENU TOGGLE
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+
+    hamburgerBtn.addEventListener('click', () => {
+      toggleMobileMenu();
+    });
+
+    function toggleMobileMenu() {
+      mobileDrawer.classList.toggle('open');
+      // Simple visual toggle for hamburger lines
+      const spans = hamburgerBtn.querySelectorAll('span');
+      if (mobileDrawer.classList.contains('open')) {
+        spans[0].style.transform = 'translateY(6px) rotate(45deg)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'translateY(-6px) rotate(-45deg)';
+      } else {
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      }
+    }
+
+    // CUSTOM CALENDAR RENDERING LOGIC
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+    // State for dates
+    let calendarState = {
+      pickup: {
+        year: 2026,
+        month: 5, // June (0-indexed)
+        selectedDate: null
+      },
+      return: {
+        year: 2026,
+        month: 5, // June (0-indexed)
+        selectedDate: null
+      }
+    };
+
+    function renderCalendar(type) {
+      const state = calendarState[type];
+      const grid = document.getElementById(`${type}-grid`);
+      const monthLabel = document.getElementById(`${type}-month-label`);
+      
+      grid.innerHTML = '';
+      monthLabel.textContent = `${months[state.month]} ${state.year}`;
+
+      // June 2026 starts on a Monday (which is index 0 in our Mon-Sun layout)
+      // Get first day of the month
+      const firstDayOfMonth = new Date(state.year, state.month, 1);
+      // Day of week (0 is Sunday, 1 is Monday... so we want (day + 6) % 7 to map Monday to index 0)
+      let startDayIdx = (firstDayOfMonth.getDay() + 6) % 7;
+
+      // Get number of days in month
+      const daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
+      // Get number of days in previous month
+      const prevMonthDays = new Date(state.year, state.month, 0).getDate();
+
+      // Render other month days (previous)
+      for (let i = startDayIdx - 1; i >= 0; i--) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day other-month';
+        dayDiv.textContent = prevMonthDays - i;
+        grid.appendChild(dayDiv);
+      }
+
+      // Render current month days
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day';
+        dayDiv.textContent = d;
+
+        // Mark today (June 23, 2026 in metadata)
+        if (state.year === 2026 && state.month === 5 && d === 23) {
+          dayDiv.classList.add('today');
+        }
+
+        // Mark selected
+        if (state.selectedDate && state.selectedDate.getDate() === d && state.selectedDate.getMonth() === state.month && state.selectedDate.getFullYear() === state.year) {
+          dayDiv.classList.add('selected');
+        }
+
+        dayDiv.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectDate(type, d);
+        });
+
+        grid.appendChild(dayDiv);
+      }
+
+      // Fill empty slots with next month days
+      const totalCells = startDayIdx + daysInMonth;
+      const nextDays = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+      for (let n = 1; n <= nextDays; n++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day other-month';
+        dayDiv.textContent = n;
+        grid.appendChild(dayDiv);
+      }
+    }
+
+    function toggleCalendar(type) {
+      const otherType = type === 'pickup' ? 'return' : 'pickup';
+      document.getElementById(`${otherType}-calendar`).classList.remove('active');
+      
+      const panel = document.getElementById(`${type}-calendar`);
+      panel.classList.toggle('active');
+      if (panel.classList.contains('active')) {
+        renderCalendar(type);
+      }
+    }
+
+    function prevMonth(type, e) {
+      e.stopPropagation();
+      const state = calendarState[type];
+      if (state.month === 0) {
+        state.month = 11;
+        state.year--;
+      } else {
+        state.month--;
+      }
+      renderCalendar(type);
+    }
+
+    function nextMonth(type, e) {
+      e.stopPropagation();
+      const state = calendarState[type];
+      if (state.month === 11) {
+        state.month = 0;
+        state.year++;
+      } else {
+        state.month++;
+      }
+      renderCalendar(type);
+    }
+
+    function selectDate(type, day) {
+      const state = calendarState[type];
+      state.selectedDate = new Date(state.year, state.month, day);
+      
+      // Update display text
+      const daysStr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const monthsStr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      
+      const textEl = document.getElementById(`${type}-text`);
+      textEl.textContent = `${daysStr[state.selectedDate.getDay()]}, ${day} ${monthsStr[state.month]}`;
+      textEl.classList.remove('placeholder');
+
+      // Close panel
+      document.getElementById(`${type}-calendar`).classList.remove('active');
+    }
+
+    // Close calendar on click outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-field')) {
+        document.getElementById('pickup-calendar').classList.remove('active');
+        document.getElementById('return-calendar').classList.remove('active');
+      }
+    });
+
+    // SCROLL REVEAL IMPLEMENTATION
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(el => observer.observe(el));
+
+    // HEART TOGGLE FOR FAVORITES
+    function toggleHeart(btn, e) {
+      e.preventDefault();
+      e.stopPropagation();
+      btn.classList.toggle('liked');
+      if (btn.classList.contains('liked')) {
+        showToast('Added vehicle to your saved favorites list.');
+      } else {
+        showToast('Removed vehicle from your saved favorites.');
+      }
+    }
+
+    // TOAST NOTIFICATIONS
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast-notif');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
+    }
+
+    // MODAL WINDOW HANDLING
+    function openModal(id) {
+      const overlay = document.getElementById(`modal-${id}`);
+      if (overlay) {
+        overlay.classList.add('active');
+      }
+    }
+
+    function closeModal(id) {
+      const overlay = document.getElementById(`modal-${id}`);
+      if (overlay) {
+        overlay.classList.remove('active');
+      }
+    }
+
+    // Handle outside click to close modal
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+
+    // ACTION FORM HANDLERS
+    function handleSearch(e) {
+      e.preventDefault();
+      const loc = document.getElementById('loc-input').value;
+      const pickup = document.getElementById('pickup-text').textContent;
+      const retDate = document.getElementById('return-text').textContent;
+      
+      if (pickup === 'Select date' || retDate === 'Select date') {
+        showToast('Please select valid pickup and return dates.');
+        return;
+      }
+
+      showToast(`Searching for the best available vehicles in "${loc}" for ${pickup} - ${retDate}...`);
+    }
+
+    let activeBookedCar = '';
+    function bookCar(carName) {
+      activeBookedCar = carName;
+      document.getElementById('booking-title').textContent = `Book ${carName}`;
+      openModal('booking');
+    }
+
+    function handleBookingConfirm(e) {
+      e.preventDefault();
+      const name = document.getElementById('book-name').value;
+      const phone = document.getElementById('book-phone').value;
+      closeModal('booking');
+      showToast(`Reservation request sent to verified host for ${activeBookedCar}! They will respond within minutes.`);
+    }
+
+    function handleAuthSubmit(e, type) {
+      e.preventDefault();
+      closeModal(type);
+      showToast(`You have logged in successfully as "saiffizakaria56@gmail.com"! Welcome back.`);
+    }
+
+    function handleHostSubmit(e) {
+      e.preventDefault();
+      const car = document.getElementById('host-car').value;
+      closeModal('host');
+      showToast(`Congratulations! Your ${car} listing proposal has been submitted successfully.`);
+    }
+  </script>
+</body>
+</html>
